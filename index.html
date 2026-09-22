@@ -1,0 +1,250 @@
+<!-- ============================================================
+     1. DOCUMENT SETUP
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <!-- ============================================================
+       2. META + PAGE TITLE
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalDesk — Trading Signals</title>
+
+  <!-- ============================================================
+       3. TAILWIND CSS + DARK MODE CONFIG
+       ============================================================ -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+
+  <!-- ============================================================
+       4. CUSTOM STYLES
+       ============================================================ -->
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      background-color: #07080c;
+      background-image:
+        radial-gradient(60rem 40rem at 15% -10%, rgba(56,189,248,0.10), transparent 60%),
+        radial-gradient(50rem 35rem at 90% 0%, rgba(168,85,247,0.10), transparent 60%);
+      background-attachment: fixed;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+
+<!-- ============================================================
+     5. BODY / APP SHELL
+     ============================================================ -->
+<body class="text-slate-200 antialiased min-h-screen">
+
+  <!-- ============================================================
+       6. HEADER
+       ============================================================ -->
+  <header class="sticky top-0 z-20 border-b border-white/5 bg-[#07080c]/80 backdrop-blur-xl">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+      <div class="flex items-center gap-3">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-bold text-black">SD</div>
+        <div>
+          <p class="text-sm font-semibold tracking-tight text-white">SignalDesk</p>
+          <p class="text-[11px] text-slate-500">Options &amp; equities signals</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="hidden items-center gap-2 text-xs text-slate-400 sm:flex">
+          <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>
+          Market open
+        </span>
+        <button class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-white/10 transition">
+          Connect broker
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       7. MAIN CONTENT
+       ============================================================ -->
+  <main class="mx-auto max-w-7xl px-6 py-10">
+
+    <!-- ============================================================
+         7.1 PAGE HEADING
+         ============================================================ -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Today's signals</h1>
+      <p class="mt-2 text-sm text-slate-400">Pick a strategy to see the setups generated for this session.</p>
+    </div>
+
+    <!-- ============================================================
+         7.2 STRATEGY TABS
+         ============================================================ -->
+    <div class="grid gap-3 sm:grid-cols-2" id="strategyTabs">
+      <button data-strategy="swing" class="strategy-btn group relative overflow-hidden rounded-2xl border p-5 text-left transition border-cyan-400/40 bg-cyan-400/[0.07] shadow-[0_0_40px_-12px_rgba(34,211,238,0.5)]">
+        <div class="flex items-start justify-between">
+          <span class="text-2xl">📈</span>
+          <span class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] uppercase tracking-wider text-slate-400">Days–weeks</span>
+        </div>
+        <p class="mt-4 text-base font-semibold text-white">Swing Trading</p>
+        <p class="mt-1 text-xs leading-relaxed text-slate-400">Fewer, higher-conviction setups held across multiple sessions.</p>
+      </button>
+
+      <button data-strategy="scalping" class="strategy-btn group relative overflow-hidden rounded-2xl border p-5 text-left transition border-white/8 bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.04]">
+        <div class="flex items-start justify-between">
+          <span class="text-2xl">⚡</span>
+          <span class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] uppercase tracking-wider text-slate-400">Seconds–minutes</span>
+        </div>
+        <p class="mt-4 text-base font-semibold text-white">Scalping</p>
+        <p class="mt-1 text-xs leading-relaxed text-slate-400">Fast intraday entries with tight stops and quick targets.</p>
+      </button>
+    </div>
+
+    <!-- ============================================================
+         7.3 SIGNAL GRID SECTION
+         ============================================================ -->
+    <div class="mt-8">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400" id="signalHeading">Swing signals</h2>
+        <span class="text-xs text-slate-500" id="signalCount">2 active</span>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" id="signalGrid"></div>
+    </div>
+  </main>
+
+  <!-- ============================================================
+       8. JAVASCRIPT
+       ============================================================ -->
+  <script>
+    // ============================================================
+    // 8.1 SIGNAL DATA
+    // ============================================================
+    const SIGNALS = {
+      swing: [
+        { symbol: 'AAPL 190C', direction: 'long', entry: 4.20, target: 6.10, stop: 3.20, confidence: 78, timeframe: 'Daily', status: 'active' },
+        { symbol: 'NVDA 900P', direction: 'short', entry: 12.50, target: 8.40, stop: 15.20, confidence: 64, timeframe: '4H', status: 'active' },
+      ],
+      scalping: [
+        { symbol: 'SPY 520C', direction: 'long', entry: 1.85, target: 2.40, stop: 1.55, confidence: 71, timeframe: '5m', status: 'active' },
+        { symbol: 'TSLA 250P', direction: 'short', entry: 3.10, target: 2.30, stop: 3.60, confidence: 58, timeframe: '1m', status: 'pending' },
+        { symbol: 'QQQ 440C', direction: 'long', entry: 2.05, target: 2.75, stop: 1.70, confidence: 66, timeframe: '3m', status: 'active' },
+      ],
+    };
+
+    // ============================================================
+    // 8.2 CARD STYLES
+    // ============================================================
+    const directionStyles = {
+      long: 'bg-emerald-400/10 text-emerald-300 border-emerald-400/20',
+      short: 'bg-rose-400/10 text-rose-300 border-rose-400/20',
+    };
+
+    const statusStyles = {
+      active: 'text-emerald-400',
+      pending: 'text-amber-400',
+      closed: 'text-slate-500',
+    };
+
+    // ============================================================
+    // 8.3 RENDER SIGNALS
+    // ============================================================
+    function renderSignals(strategy) {
+      const grid = document.getElementById('signalGrid');
+      const heading = document.getElementById('signalHeading');
+      const count = document.getElementById('signalCount');
+      const list = SIGNALS[strategy] || [];
+
+      heading.textContent = strategy === 'swing' ? 'Swing signals' : 'Scalping signals';
+      count.textContent = `${list.filter(s => s.status === 'active').length} active`;
+
+      if (!list.length) {
+        grid.innerHTML = `
+          <div class="col-span-full rounded-2xl border border-dashed border-white/10 p-12 text-center">
+            <p class="text-sm text-slate-400">No signals for this strategy yet.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(s => {
+        const isLong = s.direction === 'long';
+        const rr = Math.abs((s.target - s.entry) / (s.entry - s.stop)).toFixed(1);
+        return `
+          <article class="rounded-2xl border border-white/8 bg-white/[0.02] p-5 transition hover:border-white/15 hover:bg-white/[0.04]">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-base font-semibold tracking-tight text-white">${s.symbol}</p>
+                <p class="mt-0.5 text-[11px] text-slate-500">${s.timeframe} · R:R ${rr}</p>
+              </div>
+              <span class="rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${directionStyles[s.direction]}">
+                ${s.direction}
+              </span>
+            </div>
+
+            <div class="mt-5 grid grid-cols-3 gap-3">
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">Entry</p>
+                <p class="mt-1 text-sm font-medium text-slate-200">$${s.entry.toFixed(2)}</p>
+              </div>
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">Target</p>
+                <p class="mt-1 text-sm font-medium text-emerald-300">$${s.target.toFixed(2)}</p>
+              </div>
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">Stop</p>
+                <p class="mt-1 text-sm font-medium text-rose-300">$${s.stop.toFixed(2)}</p>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <div class="mb-2 flex items-center justify-between">
+                <span class="text-[10px] uppercase tracking-wider text-slate-500">Confidence</span>
+                <span class="text-[11px] font-medium text-slate-300">${s.confidence}%</span>
+              </div>
+              <div class="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                <div class="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500" style="width: ${s.confidence}%"></div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
+              <span class="text-[11px] font-medium capitalize ${statusStyles[s.status]}">● ${s.status}</span>
+              <button class="text-[11px] font-medium text-slate-400 transition hover:text-white">Details →</button>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    // ============================================================
+    // 8.4 STRATEGY SWITCHING
+    // ============================================================
+    document.querySelectorAll('.strategy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const strategy = btn.dataset.strategy;
+
+        document.querySelectorAll('.strategy-btn').forEach(b => {
+          b.className = b.className
+            .replace('border-cyan-400/40', 'border-white/8')
+            .replace('bg-cyan-400/[0.07]', 'bg-white/[0.02]')
+            .replace('shadow-[0_0_40px_-12px_rgba(34,211,238,0.5)]', '');
+          if (!b.className.includes('hover:border-white/15')) {
+            b.className += ' hover:border-white/15 hover:bg-white/[0.04]';
+          }
+        });
+
+        btn.className = btn.className
+          .replace('border-white/8', 'border-cyan-400/40')
+          .replace('bg-white/[0.02]', 'bg-cyan-400/[0.07]')
+          .replace('hover:border-white/15', '')
+          .replace('hover:bg-white/[0.04]', '');
+        btn.className += ' shadow-[0_0_40px_-12px_rgba(34,211,238,0.5)]';
+
+        renderSignals(strategy);
+      });
+    });
+
+    // ============================================================
+    // 8.5 INITIAL RENDER
+    // ============================================================
+    renderSignals('swing');
+  </script>
+</body>
+</html>

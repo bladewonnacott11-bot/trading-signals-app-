@@ -1,0 +1,33 @@
+{
+  "name": "signaldesk",
+  "version": "0.1.0",
+  "description": "Modern trading signals web app for options and equities — swing trading and scalping strategies.",
+  "private": true,
+  "license": "MIT",
+  "author": "Your Name",
+  "homepage": "https://signaldesk.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/signaldesk.git"
+  },
+  "keywords": [
+    "trading",
+    "signals",
+    "options",
+    "stocks",
+    "swing-trading",
+    "scalping",
+    "finance"
+  ],
+  "scripts": {
+    "dev": "serve .",
+    "start": "serve .",
+    "build": "echo \"Static site — no build step required\" && exit 0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

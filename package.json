@@ -1,8 +1,9 @@
 {
   "name": "signaldesk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Modern trading signals web app for options and equities — swing trading and scalping strategies.",
   "private": true,
+  "type": "module",
   "license": "MIT",
   "author": "Your Name",
   "homepage": "https://signaldesk.vercel.app",
@@ -20,12 +21,13 @@
     "finance"
   ],
   "scripts": {
-    "dev": "serve .",
+    "dev": "vercel dev",
     "start": "serve .",
     "build": "echo \"Static site — no build step required\" && exit 0"
   },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "serve": "^14.2.1",
+    "vercel": "^39.0.0"
   },
   "engines": {
     "node": ">=18"

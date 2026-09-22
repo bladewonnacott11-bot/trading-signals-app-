@@ -20,18 +20,25 @@
   </script>
 
   <!-- ============================================================
-       4. CUSTOM STYLES
+       4. FAVICON + PWA MANIFEST
+       ============================================================ -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#07080c" />
+
+  <!-- ============================================================
+       5. CUSTOM STYLES
        ============================================================ -->
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <!-- ============================================================
-     5. BODY / APP SHELL
+     6. BODY / APP SHELL
      ============================================================ -->
 <body class="text-slate-200 antialiased min-h-screen">
 
   <!-- ============================================================
-       6. HEADER
+       7. HEADER
        ============================================================ -->
   <header class="sticky top-0 z-20 border-b border-white/5 bg-[#07080c]/80 backdrop-blur-xl">
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
@@ -49,12 +56,12 @@
   </header>
 
   <!-- ============================================================
-       7. MAIN CONTENT
+       8. MAIN CONTENT
        ============================================================ -->
   <main class="mx-auto max-w-4xl px-6 py-10" id="detailsRoot">
 
     <!-- ============================================================
-         7.1 SIGNAL HEADER
+         8.1 SIGNAL HEADER
          ============================================================ -->
     <div class="mb-8">
       <div class="flex flex-wrap items-center gap-3">
@@ -66,7 +73,7 @@
     </div>
 
     <!-- ============================================================
-         7.2 PRICE LEVELS
+         8.2 PRICE LEVELS
          ============================================================ -->
     <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Price levels</h2>
@@ -103,7 +110,7 @@
     </section>
 
     <!-- ============================================================
-         7.3 CONFIDENCE
+         8.3 CONFIDENCE
          ============================================================ -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <div class="flex items-center justify-between">
@@ -116,7 +123,24 @@
     </section>
 
     <!-- ============================================================
-         7.4 TRADE PLAN / NOTES
+         8.4 LIVE UNDERLYING PRICE
+         ============================================================ -->
+    <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Live underlying</h2>
+        <span id="liveStatus" class="text-[11px] text-slate-500">loading…</span>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-end gap-x-4 gap-y-1">
+        <p id="livePrice" class="text-3xl font-semibold tabular-nums text-white">—</p>
+        <p id="liveChange" class="pb-1 text-sm font-medium text-slate-400">—</p>
+      </div>
+
+      <p id="liveMeta" class="mt-2 text-[11px] text-slate-500"></p>
+    </section>
+
+    <!-- ============================================================
+         8.5 TRADE PLAN / NOTES
          ============================================================ -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Trade plan</h2>
@@ -129,7 +153,7 @@
     </section>
 
     <!-- ============================================================
-         7.5 ACTIONS
+         8.6 ACTIONS
          ============================================================ -->
     <section class="mt-6 flex flex-wrap gap-3">
       <button class="rounded-lg bg-gradient-to-r from-cyan-400 to-violet-500 px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90">
@@ -144,7 +168,7 @@
     </section>
 
     <!-- ============================================================
-         7.6 DISCLAIMER
+         8.7 DISCLAIMER
          ============================================================ -->
     <p class="mt-10 text-[11px] leading-relaxed text-slate-500">
       This signal is for educational purposes only and is not financial advice. Trading involves risk.
@@ -152,12 +176,12 @@
   </main>
 
   <!-- ============================================================
-       8. JAVASCRIPT
+       9. JAVASCRIPT
        ============================================================ -->
   <script src="data.js"></script>
   <script>
     // ============================================================
-    // 8.1 STYLE MAPS (duplicated from script.js for standalone use)
+    // 9.1 STYLE MAPS
     // ============================================================
     const directionStyles = {
       long: 'bg-emerald-400/10 text-emerald-300 border-emerald-400/20',
@@ -171,20 +195,67 @@
     };
 
     // ============================================================
-    // 8.2 READ QUERY PARAMS
+    // 9.2 READ QUERY PARAMS
     // ============================================================
     const params = new URLSearchParams(window.location.search);
     const strategy = params.get('strategy') || 'swing';
     const symbol = params.get('symbol');
 
     // ============================================================
-    // 8.3 LOOK UP THE SIGNAL
+    // 9.3 LOOK UP THE SIGNAL
     // ============================================================
     const list = SIGNALS[strategy] || [];
     const signal = list.find((s) => s.symbol === symbol);
 
     // ============================================================
-    // 8.4 RENDER (or show empty state)
+    // 9.4 LIVE PRICE FETCH
+    // ============================================================
+    async function loadLivePrice(symbol) {
+      const priceEl = document.getElementById('livePrice');
+      const changeEl = document.getElementById('liveChange');
+      const statusEl = document.getElementById('liveStatus');
+      const metaEl = document.getElementById('liveMeta');
+
+      if (!priceEl) return;
+
+      try {
+        const res = await fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          statusEl.textContent = data.code === 'NO_KEYS' ? 'not configured' : 'unavailable';
+          return;
+        }
+
+        const fmt = (n) => `$${Number(n).toFixed(2)}`;
+        const up = (data.change ?? 0) >= 0;
+
+        priceEl.textContent = data.price != null ? fmt(data.price) : '—';
+
+        if (data.change != null && data.changePct != null) {
+          const sign = up ? '+' : '';
+          changeEl.textContent = `${sign}${data.change.toFixed(2)} (${sign}${data.changePct.toFixed(2)}%)`;
+          changeEl.className = `pb-1 text-sm font-medium ${up ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+
+        const time = data.asOf
+          ? new Date(data.asOf).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : null;
+
+        metaEl.textContent = [
+          `${data.underlying} · ${data.feed.toUpperCase()} feed`,
+          time ? `as of ${time}` : null,
+        ].filter(Boolean).join(' · ');
+
+        statusEl.innerHTML =
+          '<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>live</span>';
+      } catch (err) {
+        statusEl.textContent = 'unavailable';
+      }
+    }
+
+    // ============================================================
+    // 9.5 RENDER (or show empty state)
     // ============================================================
     if (!signal) {
       document.getElementById('detailsRoot').innerHTML = `
@@ -219,6 +290,9 @@
       document.getElementById('detailConfidenceBar').style.width = `${signal.confidence}%`;
 
       document.title = `${signal.symbol} — SignalDesk`;
+
+      // --- Load live market data for the underlying ---
+      loadLivePrice(signal.symbol);
     }
   </script>
 </body>

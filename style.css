@@ -64,3 +64,47 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ============================================================
+   6. PRICE CHART CONTAINER
+   ============================================================ */
+#priceChart {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  min-height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Ensure the library's injected canvas fills the container */
+#priceChart > div,
+#priceChart canvas {
+  width: 100% !important;
+}
+
+/* ============================================================
+   7. CHART STATUS INDICATOR
+   ============================================================ */
+#chartStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
+}
+
+/* ============================================================
+   8. LIVE PRICE PULSE
+   ============================================================ */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+#liveStatus .animate-pulse,
+#chartStatus .animate-pulse {
+  animation: livePulse 1.6s ease-in-out infinite;
+}

@@ -60,9 +60,7 @@
        ============================================================ -->
   <main class="mx-auto max-w-4xl px-6 py-10" id="detailsRoot">
 
-    <!-- ============================================================
-         8.1 SIGNAL HEADER
-         ============================================================ -->
+    <!-- 8.1 SIGNAL HEADER -->
     <div class="mb-8">
       <div class="flex flex-wrap items-center gap-3">
         <h1 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl" id="detailSymbol">—</h1>
@@ -72,12 +70,9 @@
       <p class="mt-2 text-sm text-slate-400" id="detailSubtitle">—</p>
     </div>
 
-    <!-- ============================================================
-         8.2 PRICE LEVELS
-         ============================================================ -->
+    <!-- 8.2 PRICE LEVELS -->
     <section class="rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Price levels</h2>
-
       <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Entry</p>
@@ -92,7 +87,6 @@
           <p class="mt-1 text-lg font-medium text-rose-300" id="detailStop">—</p>
         </div>
       </div>
-
       <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div>
           <p class="text-[10px] uppercase tracking-wider text-slate-500">Risk / Reward</p>
@@ -109,9 +103,7 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         8.3 CONFIDENCE
-         ============================================================ -->
+    <!-- 8.3 CONFIDENCE -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Confidence</h2>
@@ -122,26 +114,20 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         8.4 LIVE UNDERLYING PRICE
-         ============================================================ -->
+    <!-- 8.4 LIVE UNDERLYING PRICE -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Live underlying</h2>
         <span id="liveStatus" class="text-[11px] text-slate-500">loading…</span>
       </div>
-
       <div class="mt-4 flex flex-wrap items-end gap-x-4 gap-y-1">
         <p id="livePrice" class="text-3xl font-semibold tabular-nums text-white">—</p>
         <p id="liveChange" class="pb-1 text-sm font-medium text-slate-400">—</p>
       </div>
-
       <p id="liveMeta" class="mt-2 text-[11px] text-slate-500"></p>
     </section>
 
-    <!-- ============================================================
-         8.5 PRICE ACTION CHART
-         ============================================================ -->
+    <!-- 8.5 PRICE ACTION CHART -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Price action</h2>
@@ -160,9 +146,7 @@
       <div id="priceChart" class="mt-4 w-full" style="height: 320px;"></div>
     </section>
 
-    <!-- ============================================================
-         8.6 TRADE PLAN / NOTES
-         ============================================================ -->
+    <!-- 8.6 TRADE PLAN -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Trade plan</h2>
       <ul class="mt-4 space-y-2 text-sm text-slate-300">
@@ -173,24 +157,14 @@
       </ul>
     </section>
 
-    <!-- ============================================================
-         8.7 ACTIONS
-         ============================================================ -->
+    <!-- 8.7 ACTIONS -->
     <section class="mt-6 flex flex-wrap gap-3">
-      <button class="rounded-lg bg-gradient-to-r from-cyan-400 to-violet-500 px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90">
-        Copy signal
-      </button>
-      <button class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10">
-        Watchlist
-      </button>
-      <button class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10">
-        Alert me
-      </button>
+      <button class="rounded-lg bg-gradient-to-r from-cyan-400 to-violet-500 px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90">Copy signal</button>
+      <button class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10">Watchlist</button>
+      <button class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10">Alert me</button>
     </section>
 
-    <!-- ============================================================
-         8.8 DISCLAIMER
-         ============================================================ -->
+    <!-- 8.8 DISCLAIMER -->
     <p class="mt-10 text-[11px] leading-relaxed text-slate-500">
       This signal is for educational purposes only and is not financial advice. Trading involves risk.
     </p>
@@ -202,6 +176,8 @@
   <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
   <script src="data.js"></script>
   <script>
+    console.log('[SignalDesk] script start — LightweightCharts:', typeof LightweightCharts);
+
     // ============================================================
     // 9.1 STYLE MAPS
     // ============================================================
@@ -209,7 +185,6 @@
       long: 'bg-emerald-400/10 text-emerald-300 border-emerald-400/20',
       short: 'bg-rose-400/10 text-rose-300 border-rose-400/20',
     };
-
     const statusStyles = {
       active: 'text-emerald-400',
       pending: 'text-amber-400',
@@ -226,22 +201,23 @@
     // ============================================================
     // 9.3 LOOK UP THE SIGNAL
     // ============================================================
-    const list = SIGNALS[strategy] || [];
+    const list = (typeof SIGNALS !== 'undefined' && SIGNALS[strategy]) || [];
     const signal = list.find((s) => s.symbol === symbol);
+
+    console.log('[SignalDesk] strategy:', strategy, 'symbol:', symbol, 'signal found:', !!signal);
 
     // ============================================================
     // 9.4 LIVE PRICE FETCH
     // ============================================================
-    async function loadLivePrice(symbol) {
+    async function loadLivePrice(sym) {
       const priceEl = document.getElementById('livePrice');
       const changeEl = document.getElementById('liveChange');
       const statusEl = document.getElementById('liveStatus');
       const metaEl = document.getElementById('liveMeta');
-
       if (!priceEl) return;
 
       try {
-        const res = await fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`);
+        const res = await fetch(`/api/quote?symbol=${encodeURIComponent(sym)}`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -253,24 +229,19 @@
         const up = (data.change ?? 0) >= 0;
 
         priceEl.textContent = data.price != null ? fmt(data.price) : '—';
-
         if (data.change != null && data.changePct != null) {
           const sign = up ? '+' : '';
           changeEl.textContent = `${sign}${data.change.toFixed(2)} (${sign}${data.changePct.toFixed(2)}%)`;
           changeEl.className = `pb-1 text-sm font-medium ${up ? 'text-emerald-400' : 'text-rose-400'}`;
         }
-
         const time = data.asOf
           ? new Date(data.asOf).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           : null;
-
         metaEl.textContent = [
           `${data.underlying} · ${data.feed.toUpperCase()} feed`,
           time ? `as of ${time}` : null,
         ].filter(Boolean).join(' · ');
-
-        statusEl.innerHTML =
-          '<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>live</span>';
+        statusEl.innerHTML = '<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>live</span>';
       } catch (err) {
         statusEl.textContent = 'unavailable';
       }
@@ -283,102 +254,166 @@
     let candleSeries = null;
     let chartTimer = null;
 
-    /* Map a signal timeframe to an Alpaca-compatible timeframe */
     function mapSignalTimeframe(tf) {
       const map = {
-        '1m': '1Min',
-        '3m': '5Min',
-        '5m': '5Min',
-        '15m': '15Min',
-        '30m': '30Min',
-        '1H': '1Hour',
-        '4H': '1Hour',
-        Daily: '1Day',
-        '1D': '1Day',
+        '1m': '1Min', '3m': '5Min', '5m': '5Min',
+        '15m': '15Min', '30m': '30Min', '1H': '1Hour',
+        '4H': '1Hour', Daily: '1Day', '1D': '1Day',
       };
       return map[tf] || '5Min';
     }
 
-    /* Create the chart on first load, then reuse it */
-    function ensureChart() {
+    function showChartMessage(msg, isError = false) {
       const container = document.getElementById('priceChart');
-      if (!container || chartInstance) return;
-
-      chartInstance = LightweightCharts.createChart(container, {
-        layout: {
-          background: { type: 'solid', color: 'transparent' },
-          textColor: '#94a3b8',
-          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-        },
-        grid: {
-          vertLines: { color: 'rgba(255,255,255,0.03)' },
-          horzLines: { color: 'rgba(255,255,255,0.03)' },
-        },
-        rightPriceScale: {
-          borderColor: 'rgba(255,255,255,0.08)',
-        },
-        timeScale: {
-          borderColor: 'rgba(255,255,255,0.08)',
-          timeVisible: true,
-          secondsVisible: false,
-        },
-        crosshair: {
-          mode: LightweightCharts.CrosshairMode.Normal,
-        },
-        autoSize: true,
-      });
-
-      candleSeries = chartInstance.addCandlestickSeries({
-        upColor: '#22d3ee',
-        downColor: '#f43f5e',
-        borderUpColor: '#22d3ee',
-        borderDownColor: '#f43f5e',
-        wickUpColor: '#22d3ee',
-        wickDownColor: '#f43f5e',
-      });
+      if (!container) return;
+      container.innerHTML = `
+        <div style="height:100%;display:flex;align-items:center;justify-content:center;
+                    border:1px dashed ${isError ? 'rgba(244,63,94,0.3)' : 'rgba(255,255,255,0.1)'};
+                    border-radius:12px;">
+          <p style="color:${isError ? '#fda4af' : '#94a3b8'};font-size:12px;text-align:center;padding:16px;max-width:80%;">
+            ${msg}
+          </p>
+        </div>`;
     }
 
-    /* Fetch bars and render */
-    async function loadChart(symbol, timeframe) {
+    function generateDemoData() {
+      const bars = [];
+      let price = 100;
+      const now = Math.floor(Date.now() / 1000);
+      for (let i = 200; i >= 0; i--) {
+        const time = now - i * 300;
+        const open = price;
+        const close = open + (Math.random() - 0.48) * 2;
+        const high = Math.max(open, close) + Math.random() * 0.5;
+        const low = Math.min(open, close) - Math.random() * 0.5;
+        bars.push({ time, open, high, low, close });
+        price = close;
+      }
+      return bars;
+    }
+
+    function ensureChart() {
+      const container = document.getElementById('priceChart');
+      if (!container) { console.error('[SignalDesk] container missing'); return false; }
+
+      if (typeof LightweightCharts === 'undefined') {
+        console.error('[SignalDesk] LightweightCharts undefined');
+        showChartMessage('Chart library failed to load. Check your internet connection or ad-blocker.', true);
+        return false;
+      }
+
+      if (chartInstance) return true;
+
+      try {
+        const width = container.clientWidth || 600;
+        const height = container.clientHeight || 320;
+        console.log('[SignalDesk] creating chart', width, 'x', height);
+
+        chartInstance = LightweightCharts.createChart(container, {
+          width,
+          height,
+          layout: {
+            background: { type: 'solid', color: 'transparent' },
+            textColor: '#94a3b8',
+            fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+          },
+          grid: {
+            vertLines: { color: 'rgba(255,255,255,0.03)' },
+            horzLines: { color: 'rgba(255,255,255,0.03)' },
+          },
+          rightPriceScale: { borderColor: 'rgba(255,255,255,0.08)' },
+          timeScale: {
+            borderColor: 'rgba(255,255,255,0.08)',
+            timeVisible: true,
+            secondsVisible: false,
+          },
+          crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        });
+
+        candleSeries = chartInstance.addCandlestickSeries({
+          upColor: '#22d3ee',
+          downColor: '#f43f5e',
+          borderUpColor: '#22d3ee',
+          borderDownColor: '#f43f5e',
+          wickUpColor: '#22d3ee',
+          wickDownColor: '#f43f5e',
+        });
+
+        try {
+          const ro = new ResizeObserver(() => {
+            if (!chartInstance) return;
+            chartInstance.applyOptions({
+              width: container.clientWidth,
+              height: container.clientHeight || 320,
+            });
+          });
+          ro.observe(container);
+        } catch (e) {
+          console.warn('[SignalDesk] ResizeObserver not available');
+        }
+
+        console.log('[SignalDesk] chart created OK');
+        return true;
+      } catch (err) {
+        console.error('[SignalDesk] chart creation failed:', err);
+        showChartMessage('Chart could not be created: ' + err.message, true);
+        return false;
+      }
+    }
+
+    async function loadChart(sym, timeframe) {
       const statusEl = document.getElementById('chartStatus');
       if (!statusEl) return;
 
       try {
-        const res = await fetch(
-          `/api/bars?symbol=${encodeURIComponent(symbol)}&timeframe=${timeframe}&limit=300`
-        );
+        const url = `/api/bars?symbol=${encodeURIComponent(sym)}&timeframe=${timeframe}&limit=300`;
+        console.log('[SignalDesk] fetching:', url);
+
+        const res = await fetch(url);
         const data = await res.json();
+        console.log('[SignalDesk] bars response:', res.status, data);
 
-        if (!res.ok) {
-          statusEl.textContent = data.code === 'NO_KEYS' ? 'not configured' : 'unavailable';
-          return;
+        let bars = null;
+        let isLive = false;
+
+        if (res.ok && Array.isArray(data.bars) && data.bars.length > 0) {
+          bars = data.bars;
+          isLive = true;
+        } else {
+          const reason = !res.ok ? (data.error || 'API error') : 'no bars returned';
+          console.warn('[SignalDesk] falling back to demo data. Reason:', reason);
+          bars = generateDemoData();
+          statusEl.innerHTML = `<span style="color:#fbbf24;">demo · ${reason}</span>`;
         }
 
-        if (!data.bars?.length) {
-          statusEl.textContent = 'no data';
-          return;
-        }
+        if (!ensureChart()) return;
 
-        ensureChart();
-        candleSeries.setData(data.bars);
+        candleSeries.setData(bars);
         chartInstance.timeScale().fitContent();
 
-        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>live · ${now}</span>`;
+        if (isLive) {
+          const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>live · ${now}</span>`;
+        }
       } catch (err) {
-        statusEl.textContent = 'unavailable';
+        console.error('[SignalDesk] loadChart error:', err);
+        const bars = generateDemoData();
+        if (ensureChart()) {
+          candleSeries.setData(bars);
+          chartInstance.timeScale().fitContent();
+        }
+        statusEl.innerHTML = `<span style="color:#fbbf24;">demo · network error</span>`;
       }
     }
 
-    /* Kick off + refresh every 20 seconds */
-    function startChart(symbol, timeframe) {
+    function startChart(sym, timeframe) {
       if (chartTimer) clearInterval(chartTimer);
-      loadChart(symbol, timeframe);
-      chartTimer = setInterval(() => loadChart(symbol, timeframe), 20000);
+      loadChart(sym, timeframe);
+      chartTimer = setInterval(() => loadChart(sym, timeframe), 20000);
     }
 
     // ============================================================
-    // 9.6 RENDER (or show empty state)
+    // 9.6 RENDER
     // ============================================================
     if (!signal) {
       document.getElementById('detailsRoot').innerHTML = `
@@ -414,16 +449,13 @@
 
       document.title = `${signal.symbol} — SignalDesk`;
 
-      // --- Load live market data ---
       loadLivePrice(signal.symbol);
 
-      // --- Load chart, seeded with the signal's natural timeframe ---
       const initialTf = mapSignalTimeframe(signal.timeframe);
       const tfSelect = document.getElementById('chartTimeframe');
       tfSelect.value = initialTf;
       startChart(signal.symbol, initialTf);
 
-      // --- Manual timeframe switching ---
       tfSelect.addEventListener('change', (e) => {
         startChart(signal.symbol, e.target.value);
       });

@@ -140,7 +140,28 @@
     </section>
 
     <!-- ============================================================
-         8.5 TRADE PLAN / NOTES
+         8.5 PRICE ACTION CHART
+         ============================================================ -->
+    <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Price action</h2>
+        <div class="flex items-center gap-2">
+          <select id="chartTimeframe" class="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-slate-300 outline-none focus:border-cyan-400/40">
+            <option value="1Min">1m</option>
+            <option value="5Min" selected>5m</option>
+            <option value="15Min">15m</option>
+            <option value="30Min">30m</option>
+            <option value="1Hour">1H</option>
+            <option value="1Day">1D</option>
+          </select>
+          <span id="chartStatus" class="text-[11px] text-slate-500">loading…</span>
+        </div>
+      </div>
+      <div id="priceChart" class="mt-4 w-full" style="height: 320px;"></div>
+    </section>
+
+    <!-- ============================================================
+         8.6 TRADE PLAN / NOTES
          ============================================================ -->
     <section class="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-6">
       <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Trade plan</h2>
@@ -153,7 +174,7 @@
     </section>
 
     <!-- ============================================================
-         8.6 ACTIONS
+         8.7 ACTIONS
          ============================================================ -->
     <section class="mt-6 flex flex-wrap gap-3">
       <button class="rounded-lg bg-gradient-to-r from-cyan-400 to-violet-500 px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90">
@@ -168,7 +189,7 @@
     </section>
 
     <!-- ============================================================
-         8.7 DISCLAIMER
+         8.8 DISCLAIMER
          ============================================================ -->
     <p class="mt-10 text-[11px] leading-relaxed text-slate-500">
       This signal is for educational purposes only and is not financial advice. Trading involves risk.
@@ -178,6 +199,7 @@
   <!-- ============================================================
        9. JAVASCRIPT
        ============================================================ -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
   <script src="data.js"></script>
   <script>
     // ============================================================
@@ -255,7 +277,108 @@
     }
 
     // ============================================================
-    // 9.5 RENDER (or show empty state)
+    // 9.5 PRICE CHART
+    // ============================================================
+    let chartInstance = null;
+    let candleSeries = null;
+    let chartTimer = null;
+
+    /* Map a signal timeframe to an Alpaca-compatible timeframe */
+    function mapSignalTimeframe(tf) {
+      const map = {
+        '1m': '1Min',
+        '3m': '5Min',
+        '5m': '5Min',
+        '15m': '15Min',
+        '30m': '30Min',
+        '1H': '1Hour',
+        '4H': '1Hour',
+        Daily: '1Day',
+        '1D': '1Day',
+      };
+      return map[tf] || '5Min';
+    }
+
+    /* Create the chart on first load, then reuse it */
+    function ensureChart() {
+      const container = document.getElementById('priceChart');
+      if (!container || chartInstance) return;
+
+      chartInstance = LightweightCharts.createChart(container, {
+        layout: {
+          background: { type: 'solid', color: 'transparent' },
+          textColor: '#94a3b8',
+          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+        },
+        grid: {
+          vertLines: { color: 'rgba(255,255,255,0.03)' },
+          horzLines: { color: 'rgba(255,255,255,0.03)' },
+        },
+        rightPriceScale: {
+          borderColor: 'rgba(255,255,255,0.08)',
+        },
+        timeScale: {
+          borderColor: 'rgba(255,255,255,0.08)',
+          timeVisible: true,
+          secondsVisible: false,
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        autoSize: true,
+      });
+
+      candleSeries = chartInstance.addCandlestickSeries({
+        upColor: '#22d3ee',
+        downColor: '#f43f5e',
+        borderUpColor: '#22d3ee',
+        borderDownColor: '#f43f5e',
+        wickUpColor: '#22d3ee',
+        wickDownColor: '#f43f5e',
+      });
+    }
+
+    /* Fetch bars and render */
+    async function loadChart(symbol, timeframe) {
+      const statusEl = document.getElementById('chartStatus');
+      if (!statusEl) return;
+
+      try {
+        const res = await fetch(
+          `/api/bars?symbol=${encodeURIComponent(symbol)}&timeframe=${timeframe}&limit=300`
+        );
+        const data = await res.json();
+
+        if (!res.ok) {
+          statusEl.textContent = data.code === 'NO_KEYS' ? 'not configured' : 'unavailable';
+          return;
+        }
+
+        if (!data.bars?.length) {
+          statusEl.textContent = 'no data';
+          return;
+        }
+
+        ensureChart();
+        candleSeries.setData(data.bars);
+        chartInstance.timeScale().fitContent();
+
+        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        statusEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>live · ${now}</span>`;
+      } catch (err) {
+        statusEl.textContent = 'unavailable';
+      }
+    }
+
+    /* Kick off + refresh every 20 seconds */
+    function startChart(symbol, timeframe) {
+      if (chartTimer) clearInterval(chartTimer);
+      loadChart(symbol, timeframe);
+      chartTimer = setInterval(() => loadChart(symbol, timeframe), 20000);
+    }
+
+    // ============================================================
+    // 9.6 RENDER (or show empty state)
     // ============================================================
     if (!signal) {
       document.getElementById('detailsRoot').innerHTML = `
@@ -291,8 +414,19 @@
 
       document.title = `${signal.symbol} — SignalDesk`;
 
-      // --- Load live market data for the underlying ---
+      // --- Load live market data ---
       loadLivePrice(signal.symbol);
+
+      // --- Load chart, seeded with the signal's natural timeframe ---
+      const initialTf = mapSignalTimeframe(signal.timeframe);
+      const tfSelect = document.getElementById('chartTimeframe');
+      tfSelect.value = initialTf;
+      startChart(signal.symbol, initialTf);
+
+      // --- Manual timeframe switching ---
+      tfSelect.addEventListener('change', (e) => {
+        startChart(signal.symbol, e.target.value);
+      });
     }
   </script>
 </body>
